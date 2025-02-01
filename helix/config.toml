@@ -1,0 +1,74 @@
+theme = "onedarker"
+
+[editor]
+
+line-number = "relative"
+cursorline = false
+cursorcolumn = false
+mouse = false
+middle-click-paste = false
+scroll-lines = 2
+continue-comments = false
+gutters = ["spacer","diagnostics","spacer","diff"]
+auto-completion = true
+path-completion = true
+auto-format = true
+bufferline = "never"
+popup-border = "all"
+end-of-line-diagnostics = "hint"
+
+[editor.statusline]
+
+left = ["spacer", "separator", "version-control", "separator", "mode", "spinner"]
+center = ["file-modification-indicator", "read-only-indicator", "file-name"]
+right = ["diagnostics", "separator", "position", "separator", "spacer", "position-percentage", "spacer", "separator", "total-line-numbers", "separator", "file-type", "separator", "file-encoding"]
+separator = "|"
+mode.normal = "Normal"
+mode.insert = "Insert"
+mode.select = "Select"
+
+[editor.lsp]
+
+enable = true
+display-messages = true
+auto-signature-help = true
+display-inlay-hints = true
+display-signature-help-docs = true
+snippets = true
+goto-reference-include-declaration = true
+
+[editor.cursor-shape]
+
+insert = "bar"
+normal = "bar"
+select = "underline"
+
+[editor.file-picker]
+
+hidden = true
+follow-symlinks = true
+deduplicate-links = false
+parents = false
+ignore = false
+git-ignore = false
+git-global = false
+git-exclude = false
+
+[editor.auto-pairs]
+
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+'`' = '`'
+'<' = '>'
+
+[editor.soft-wrap]
+
+enable = true
+max-indent-retain = 0
+# wrap-indicator = ""
+
+[editor.inline-diagnostics]
+
+cursor-line = "warning"
