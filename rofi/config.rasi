@@ -1,2 +1,6 @@
-
-@theme "/usr/share/rofi/themes/Monokai.rasi"
+@theme "~/.config/rofi/themes/h4ck.rasi"
+configuration {
+	modi: "drun";
+	display-drun: "󰀻 Apps";
+	show-icons: true;
+	terminal: "alacritty";}
