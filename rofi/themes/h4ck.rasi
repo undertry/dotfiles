@@ -1,7 +1,7 @@
 * {
 	background-color: #0f0f0f;
 	text-color: #fafafa;
-    font: "AnonymiceProNerdFontMono 11";
+        font: "AnonymiceProNerdFontMono 11";
  	line-margin: 0;
 	line-padding: 0;
 	separator-style: "none";
