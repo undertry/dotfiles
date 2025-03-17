@@ -1,0 +1,50 @@
+#!/run/current-system/sw/bin/bash
+
+# Preguntar por el modo usando wofi
+modo=$(echo -e "light\ndark" | wofi --dmenu --prompt "Selecciona modo")
+
+# Verificar la selección
+if [ "$modo" == "light" ]; then
+    echo "Modo claro seleccionado"
+    
+   # Cambiar el tema de Alacritty
+    sed -i 's|~/.config/alacritty/themes/dark_gray.toml|~/.config/alacritty/themes/light_gray.toml|' ~/.config/alacritty/alacritty.toml
+
+   # Cambiar el tema de helix
+
+   sed -i 's/theme = "hex_lavender"/theme = "ingrid"/' ~/.config/helix/config.toml
+    
+   # Eliminar procesos de waybar y hyprpaper
+
+    pkill waybar && pkill hyprpaper
+    
+    # Cambiar el tema de Waybar
+    waybar -s ~/.config/waybar/themes/light.css & disown
+
+    # Cambiar el fondo de pantalla con Hyprpaper
+    hyprpaper -c ~/.config/hypr/hyprpaper/light.conf & disown
+
+elif [ "$modo" == "dark" ]; then
+    echo "Modo oscuro seleccionado"
+
+    # Cambiar el tema de Alacritty
+    sed -i 's|~/.config/alacritty/themes/light_gray.toml|~/.config/alacritty/themes/dark_gray.toml|' ~/.config/alacritty/alacritty.toml
+
+   # Cambiar el tema de helix
+
+    sed -i 's/theme = "ingrid"/theme = "hex_lavender"/' ~/.config/helix/config.toml
+   
+    # Eliminar procesos de waybar
+
+    pkill waybar && pkill hyprpaper
+
+    # Cambiar el tema de Waybar
+    waybar -s ~/.config/waybar/themes/dark.css & disown
+
+    # Cambiar el fondo de pantalla con Hyprpaper
+    hyprpaper -c ~/.config/hypr/hyprpaper/dark.conf & disown
+
+else
+    echo "Modo no válido seleccionado"
+fi
+

@@ -1,0 +1,70 @@
+{
+    "layer": "top",
+    "position": "left",
+    "width": 40,
+    "height": 1080,
+    // "margin-left": 10,
+    "spacing": 10, 
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": [""],
+    "modules-right": ["group/time"],
+
+    	"group/date": {
+		    "orientation": "vertical",
+		    "modules": [
+			    "clock",
+			    "clock#2",
+			    "clock#3"
+		    ]
+    },
+
+     	"group/time": {
+		    "orientation": "vertical",
+		    "modules": [
+			    "clock#4",
+			    "clock#5"
+		    ]
+    },   
+
+    "clock": {
+    	"interval": 1,
+	    "format": "{:%y}",
+    },
+    
+    "clock#2": {
+	    "interval": 1,
+	    "format": "{:%m}",
+    },
+    
+    "clock#3": {
+	    "interval": 1,
+	    "format": "{:%d}",
+    },
+
+    "clock#4": {
+      "timezone": "America/Argentina/Buenos_Aires",
+      "interval": 1,
+      "format": "{:%H}",
+    },
+
+    "clock#5": {
+      "timezone": "America/Argentina/Buenos_Aires",
+      "interval": 1,
+      "format": "{:%M}"
+    },
+
+    "hyprland/workspaces": {
+			"on-click": "activate",
+      "disable-scroll": false,
+      "all-outputs": true,
+      "format": "{name}",
+      // "format-icons": {
+      	// "1": "",
+      	// "2": "",
+      	// "3": "",
+      	// "4": "",
+      	// "default": "" 
+		},
+}
+
+}

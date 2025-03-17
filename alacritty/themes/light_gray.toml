@@ -1,0 +1,51 @@
+# Tema sobrio en escala de grises - Modo claro
+
+[colors.primary]
+background = '#e0e0e0'  # Gris muy claro
+foreground = '#303030'  # Gris oscuro
+
+dim_foreground = '#505050'  # Gris medio
+bright_foreground = '#101010'  # Gris más oscuro
+
+[colors.cursor]
+text = '#e0e0e0'  # Fondo claro
+cursor = '#505050'  # Gris medio
+
+[colors.vi_mode_cursor]
+text = '#e0e0e0'
+cursor = '#707070'  # Gris oscuro
+
+[colors.selection]
+text = '#e0e0e0'
+background = '#a0a0a0'  # Gris medio
+
+[colors.normal]
+black = '#c0c0c0'
+red = '#909090'  # Gris oscuro rojizo
+green = '#808080'  # Gris verdoso
+yellow = '#707070'  # Gris amarillento
+blue = '#606060'  # Gris azulado
+magenta = '#505050'  # Gris rosado
+cyan = '#404040'  # Gris azulado claro
+white = '#303030'  # Gris cálido
+
+[colors.bright]
+black = '#d0d0d0'
+red = '#b0b0b0'
+green = '#a0a0a0'
+yellow = '#909090'
+blue = '#808080'
+magenta = '#707070'
+cyan = '#606060'
+white = '#505050'
+
+[colors.dim]
+black = '#f0f0f0'
+red = '#d0d0d0'
+green = '#c0c0c0'
+yellow = '#b0b0b0'
+blue = '#a0a0a0'
+magenta = '#909090'
+cyan = '#808080'
+white = '#707070'
+
