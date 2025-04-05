@@ -1,0 +1,63 @@
+#!/run/current-system/sw/bin/bash
+
+# Base notes directory
+BASE_DIR=~/Documents/Notes
+
+# Ask for the note title
+read -rp "Note title: " title
+
+# Ask for the note type
+echo "Note type?"
+echo "1) Project"
+echo "2) Study"
+echo "3) Journal"
+read -rp "Choose an option [1-3]: " type
+
+case "$type" in
+  1) DIR="$BASE_DIR/projects"; TYPE_NAME="Project" ;;
+  2) DIR="$BASE_DIR/study"; TYPE_NAME="Study" ;;
+  3) DIR="$BASE_DIR/journal"; TYPE_NAME="Journal" ;;
+  *) echo "Invalid option. Using base directory."; DIR="$BASE_DIR"; TYPE_NAME="General" ;;
+esac
+
+# Create directory if it doesn't exist
+mkdir -p "$DIR"
+
+# Full path to the note
+file="$DIR/${title}.md"
+
+# Start date
+start_date=$(date '+%Y-%m-%d %H:%M')
+
+# If the file doesn't exist, create it with a template
+if [[ ! -f "$file" ]]; then
+  cat > "$file" <<EOF
+Status: In progress
+Type: $TYPE_NAME
+Start date: $start_date
+End date: 
+Tags: 
+
+---
+
+EOF
+fi
+
+# Open with Helix
+hx "$file"
+
+# After exiting, ask if the note was finished
+read -rp "Did you finish the note? (y/n): " answer
+
+if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
+  end_date=$(date '+%Y-%m-%d %H:%M')
+
+  # Update status and end date
+  sed -i "s/^Status: .*/Status: Finished/" "$file"
+  sed -i "s/^End date: .*/End date: $end_date/" "$file"
+
+  echo "✅ Note marked as finished and updated."
+else
+  echo "📝 Note saved as 'In progress'."
+fi
+
