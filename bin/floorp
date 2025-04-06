@@ -1,0 +1,19 @@
+#!/run/current-system/sw/bin/bash
+
+# Lanzar Floorp
+flatpak run one.ablaze.floorp &
+
+# Esperar a que la ventana aparezca (ajustá el tiempo si hace falta)
+sleep 1
+
+# Buscar la ventana por clase
+WIN_ID=$(xdotool search --onlyvisible --class floorp | head -n 1)
+
+# Si se encuentra la ventana, activarla y simular F5
+if [ -n "$WIN_ID" ]; then
+  xdotool windowactivate "$WIN_ID"
+  xdotool key --window "$WIN_ID" F5
+else
+  echo "No se encontró la ventana de Floorp."
+fi
+

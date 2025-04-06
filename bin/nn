@@ -1,63 +1,131 @@
 #!/run/current-system/sw/bin/bash
 
-# Base notes directory
-BASE_DIR=~/Documents/Notes
+BASE_DIR="$HOME/Documents/Notes"
+DATE=$(date +%Y-%m-%d)
+TIME=$(date +%H-%M)
+DATETIME="${DATE}_${TIME}"
 
-# Ask for the note title
-read -rp "Note title: " title
+# Menú de selección de tipo con iconos
+echo "📘 ¿Qué tipo de nota querés crear?"
+echo "1) 🛠 project"
+echo "2) 📚 study"
+echo "3) 📓 journal"
+read -rp "Elegí una opción [1-3]: " type_choice
 
-# Ask for the note type
-echo "Note type?"
-echo "1) Project"
-echo "2) Study"
-echo "3) Journal"
-read -rp "Choose an option [1-3]: " type
-
-case "$type" in
-  1) DIR="$BASE_DIR/projects"; TYPE_NAME="Project" ;;
-  2) DIR="$BASE_DIR/study"; TYPE_NAME="Study" ;;
-  3) DIR="$BASE_DIR/journal"; TYPE_NAME="Journal" ;;
-  *) echo "Invalid option. Using base directory."; DIR="$BASE_DIR"; TYPE_NAME="General" ;;
+case $type_choice in
+  1) tipo="project" ;;
+  2) tipo="study" ;;
+  3) tipo="journal" ;;
+  *) echo "❌ Opción inválida"; exit 1 ;;
 esac
 
-# Create directory if it doesn't exist
-mkdir -p "$DIR"
+# 📁 Selección de carpeta para study o project
+if [[ $tipo == "study" || $tipo == "project" ]]; then
+  echo "📂 Categorías disponibles en '$tipo':"
+  subfolders=($(find "$BASE_DIR/$tipo" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; 2>/dev/null))
 
-# Full path to the note
-file="$DIR/${title}.md"
-
-# Start date
-start_date=$(date '+%Y-%m-%d %H:%M')
-
-# If the file doesn't exist, create it with a template
-if [[ ! -f "$file" ]]; then
-  cat > "$file" <<EOF
-Status: In progress
-Type: $TYPE_NAME
-Start date: $start_date
-End date: 
-Tags: 
-
----
-
-EOF
+  if [ ${#subfolders[@]} -eq 0 ]; then
+    echo "🆕 No hay subcarpetas creadas aún."
+    read -rp "📝 Ingresá el nombre de la nueva categoría: " subdir
+  else
+    select folder in "${subfolders[@]}" "➕ Crear nueva categoría"; do
+      if [[ $folder == "➕ Crear nueva categoría" ]]; then
+        read -rp "📝 Nombre de la nueva categoría: " subdir
+        break
+      elif [[ -n $folder ]]; then
+        subdir="$folder"
+        break
+      else
+        echo "❌ Opción inválida"
+      fi
+    done
+  fi
+  DIR="$BASE_DIR/$tipo/$subdir"
+  mkdir -p "$DIR"
 fi
 
-# Open with Helix
-hx "$file"
+# 🏷 Tags (excepto para journal)
+if [[ $tipo != "journal" ]]; then
+  read -rp "🏷 Tags (separados por espacio): " tags_input
+  tags=$(echo "$tags_input" | tr ' ' ', ')
+fi
 
-# After exiting, ask if the note was finished
-read -rp "Did you finish the note? (y/n): " answer
-
-if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
-  end_date=$(date '+%Y-%m-%d %H:%M')
-
-  # Update status and end date
-  sed -i "s/^Status: .*/Status: Finished/" "$file"
-  sed -i "s/^End date: .*/End date: $end_date/" "$file"
-
-  echo "✅ Note marked as finished and updated."
+# 📄 Título y nombre del archivo
+if [[ $tipo == "journal" ]]; then
+  titulo="$DATETIME"
+  DIR="$BASE_DIR/journal"
+  mkdir -p "$DIR"
+  FILENAME="$DIR/$DATETIME.md"
 else
-  echo "📝 Note saved as 'In progress'."
+  read -rp "📄 Título de la nota: " titulo
+  slug=$(echo "$titulo" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+  FILENAME="$DIR/$slug.md"
 fi
 
+# 🧩 Plantillas
+case $tipo in
+  project)
+    template=$'\n# Objetivo\n\n# Progreso\n\n# Tareas\n- [ ] Primera tarea'
+    ;;
+  study)
+    template=$'\n# Resumen\n\n# Conceptos clave\n\n# Notas adicionales'
+    ;;
+  journal)
+    template=$'\n# Reflexiones del día\n\n# Qué aprendí\n\n# Cómo me sentí'
+    ;;
+esac
+
+# 📄 Contenido del archivo
+{
+  echo "---"
+  echo "title: \"$titulo\""
+  echo "type: $tipo"
+  echo "status: In progress"
+  echo "start_date: \"$DATE\""
+  # Para journal, no se pone end_date
+  [[ $tipo != "journal" ]] && echo "end_date: \"\""
+  [[ $tipo != "journal" ]] && echo "tags: [$tags]"
+  echo "---"
+  echo ""
+  echo "# $titulo"
+  echo "$template"
+} > "$FILENAME"
+
+echo "✅ Nota creada en: $FILENAME"
+hx "$FILENAME"
+
+# Para study y project, preguntar si se finalizó la nota
+if [[ $tipo != "journal" ]]; then
+  read -rp "🟢 ¿Finalizaste esta nota? [s/n]: " FINISH
+  if [[ $FINISH =~ ^[sS]$ ]]; then
+    end_date=$(date +%Y-%m-%d)
+    sed -i "s/status: In progress/status: Finished/" "$FILENAME"
+    sed -i "s/end_date: \"\"/end_date: \"$end_date\"/" "$FILENAME"
+  fi
+fi
+
+# 👀 Visualización
+echo "👀 ¿Querés visualizar la nota?"
+select view_opt in "No" "Glow" "Grip" "Pandoc"; do
+  case $view_opt in
+    No) break ;;
+    Glow) glow "$FILENAME"; break ;;
+    Grip) grip "$FILENAME"; break ;;
+    Pandoc)
+      HTML_FILE="${FILENAME%.md}.html"
+      pandoc "$FILENAME" -s -o "$HTML_FILE"
+      live-server --quiet "$(dirname "$HTML_FILE")" &
+      SERVER_PID=$!
+      sleep 1  # Espera a que live-server inicie
+      URL="http://127.0.0.1:8080/$(basename "$HTML_FILE")"
+      xdg-open "$URL"
+      echo "Presioná Enter cuando termines de visualizar la nota..."
+      read -r
+      kill "$SERVER_PID" 2>/dev/null
+      read -rp "🗑 ¿Borrar el HTML generado? (s/n): " borrar
+      [[ $borrar == [sS] ]] && rm "$HTML_FILE"
+      break
+      ;;
+    *) echo "❌ Opción inválida" ;;
+  esac
+done
