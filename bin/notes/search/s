@@ -1,0 +1,76 @@
+#!/run/current-system/sw/bin/bash
+
+NOTES_DIR=~/Documents/Notes
+
+select_mode() {
+    echo "Buscar notas por:"
+    echo "1) Estado"
+    echo "2) Tags"
+    echo "3) Ver todas"
+    read -rp "Elegí una opción [1-3]: " mode
+}
+
+buscar_por_estado() {
+    estados=$(grep -rhoP '^status:\s*\K.*' "$NOTES_DIR" | sort -u)
+    estado=$(echo "$estados" | fzf --prompt="Seleccioná un estado: ")
+    [[ -z $estado ]] && exit
+    grep -rl "status: $estado" "$NOTES_DIR" --include="*.md"
+}
+
+buscar_por_tags() {
+    tags=$(grep -rhoP '^tags:\s*\K.*' "$NOTES_DIR" | tr ',' '\n' | tr -d ' ' | sort -u)
+    tag=$(echo "$tags" | fzf --prompt="Seleccioná un tag: ")
+    [[ -z $tag ]] && exit
+    grep -rl "$tag" "$NOTES_DIR" --include="*.md"
+}
+
+mostrar_todas() {
+    find "$NOTES_DIR" -name '*.md'
+}
+
+previsualizar_nota() {
+    file="$1"
+    echo "¿Con qué querés previsualizarla?"
+    echo "1) glow"
+    echo "2) grip"
+    echo "3) pandoc (render HTML y abrir en navegador)"
+    read -rp "Elegí una opción [1-3]: " opcion
+
+    case "$opcion" in
+        1) glow "$file" ;;
+        2) grip "$file" ;;
+        3)
+            html_out="/tmp/preview.html"
+            pandoc "$file" -o "$html_out" && xdg-open "$html_out"
+            ;;
+        *) echo "Opción inválida" ;;
+    esac
+}
+
+main() {
+    select_mode
+
+    case "$mode" in
+        1) files=$(buscar_por_estado) ;;
+        2) files=$(buscar_por_tags) ;;
+        3) files=$(mostrar_todas) ;;
+        *) echo "Opción inválida" && exit 1 ;;
+    esac
+
+    file=$(echo "$files" | fzf --prompt="Seleccioná una nota: ")
+    [[ -z $file ]] && exit
+
+    echo "¿Qué querés hacer con la nota?"
+    echo "1) Editarla con Helix"
+    echo "2) Previsualizarla"
+    read -rp "Elegí una opción [1-2]: " accion
+
+    case "$accion" in
+        1) hx "$file" ;;
+        2) previsualizar_nota "$file" ;;
+        *) echo "Opción inválida" ;;
+    esac
+}
+
+main
+
