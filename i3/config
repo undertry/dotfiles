@@ -5,6 +5,7 @@ font pango:JetBrains Mono Nerd Font 8
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id picom 
 exec --no-startup-id nitrogen --restore
+exec --no-startup-id ~/bin/monitors.sh &
 
 floating_modifier $mod
 tiling_drag modifier titlebar
@@ -12,6 +13,7 @@ tiling_drag modifier titlebar
 bindsym $mod+Return exec alacritty
 bindsym $mod+w kill
 bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+a exec --no-startup-id ~/bin/floorp
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -37,7 +39,6 @@ bindsym $mod+t layout tabbed
 bindsym $mod+g layout toggle split
 bindsym $mod+s floating toggle
 bindsym $mod+space focus mode_toggle
-bindsym $mod+a focus parent
 
 set $ws1 "1"
 set $ws2 "2"
@@ -49,6 +50,17 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
+
+workspace 1 output HDMI-1-0
+workspace 2 output HDMI-1-0
+workspace 3 output HDMI-1-0
+workspace 4 output HDMI-1-0
+workspace 5 output HDMI-1-0
+workspace 6 output HDMI2
+workspace 7 output HDMI2
+workspace 8 output HDMI2
+workspace 9 output HDMI2
+workspace 10 output HDMI2
 
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
