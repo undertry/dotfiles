@@ -1,0 +1,34 @@
+# Colors (Antiguo / Papiro Estilo)
+
+# Default colors
+[colors.primary]
+background = '#282828'
+foreground = '#d4b483'
+
+# Normal colors
+[colors.normal]
+black   = '#282828' # mismo fondo para consistencia
+red     = '#6d2e2a' # rojo oscuro vino
+green   = '#a89984' # verde oliva gastado
+yellow  = '#d4b483' # dorado viejo (como papiro)
+blue    = '#6d6875' # azul grisáceo apagado
+magenta = '#b5838d' # magenta viejo, suave
+cyan    = '#81a1c1' # azul opaco
+white   = '#dcd5c5' # blanco sucio / papel antiguo
+
+# Bright colors
+[colors.bright]
+black   = '#3c3836'
+red     = '#b85651'
+green   = '#98971a'
+yellow  = '#fabd2f'
+blue    = '#7c6f64'
+magenta = '#d3869b'
+cyan    = '#8ec07c'
+white   = '#fbf1c7'
+
+# Cursor colors
+[colors.cursor]
+text = '#282828'
+cursor = '#d4b483'
+

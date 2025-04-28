@@ -1,9 +1,69 @@
 general {
     interval = 1
+    colors = true
+    color_good      = '#88b090'
+    color_degraded  = '#ccdc90'
+    color_bad       = '#e89393'
 }
 
+order += "disk /"
+order += "disk /home"
+order += "memory"
+order += "cpu_usage 0"
+order += "cpu_temperature 0"
+order += "volume master"
 order += "tztime local"
+order += "time"
+
+disk "/" {
+	# format = " %avail"
+	format = "root %avail"
+	prefix_type	= custom
+	low_threshold = 20
+	threshold_type = percentage_avail
+}
+
+disk "/home" {
+	# format = "󰮜 %avail"
+	format = "home %avail"
+	prefix_type	= custom
+	low_threshold = 20
+	threshold_type = percentage_avail
+}
+
+memory {
+    # format = "  %used"
+    format = "memory %used"
+    threshold_degraded = "10%"
+    format_degraded = "MEMORY: %free"
+}
+
+cpu_usage {
+    # format = "  %usage"
+    format = "cpu usage %usage"
+}
+
+cpu_temperature 0 {
+	# format = " %degrees°C"
+	format = "cpu temperature %degrees°C"
+}
+
+volume master {
+    # format = "  %volume"
+    format = "volume %volume"
+    # format_muted = " "
+    format_muted = "muted"
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
+}
 
 tztime local {
-    format = "%H:%M:%S"
+    # format = " %H:%M:%S"
+    format = "time %H:%M:%S"
+}
+
+time {
+    # format=" %Y-%m-%d"
+    format="date %Y-%m-%d"
 }

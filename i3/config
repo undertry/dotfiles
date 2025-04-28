@@ -1,20 +1,30 @@
 set $mod Mod4
 
-font pango:JetBrains Mono Nerd Font 8
+font pango:EB Garamond 11
 
 exec --no-startup-id dex --autostart --environment i3
-exec --no-startup-id picom 
+exec --no-startup-id picom
+exec --no-startup-id dunst
+# exec --no-startup-id feh --no-fehbg --bg-fill ~/Pictures/wallpapers/files/street\ nord.png ~/Pictures/wallpapers/files/white\ structure.jpg
 exec --no-startup-id nitrogen --restore
-exec --no-startup-id ~/bin/monitors.sh &
+exec --no-startup-id cmus
+exec --no-startup-id ~/bin/monitors.sh
+exec --no-startup-id ~/bin/welcome.sh 
 
 floating_modifier $mod
 tiling_drag modifier titlebar
 
 bindsym $mod+Return exec alacritty
 bindsym $mod+w kill
-bindsym $mod+d exec --no-startup-id dmenu_run
-bindsym $mod+a exec --no-startup-id ~/bin/floorp
+bindsym $mod+d exec --no-startup-id dmenu_run -nb '#282828' -nf '#d4b483' -sb '#6d2e2a' -sf '#ffffff' -fn "EB Garamond-14"
+bindsym $mod+a exec --no-startup-id io.gitlab.librewolf-community
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
+bindsym $mod+o exec --no-startup-id md.obsidian.Obsidian
+# bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name for this workspace: '
+bindsym $mod+Mod1+l exec --no-startup-id ~/bin/lock.sh
+bindsym $mod+Shift+n exec --no-startup-id dunstctl close
+bindsym $mod+n exec --no-startup-id dunstctl history-pop
+bindsym $mod+Mod1+n exec --no-startup-id dunstctl set-paused toggle
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
@@ -26,7 +36,7 @@ bindsym $mod+Right focus right
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l right
+bindsym $mod+Shift+l move right
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
@@ -40,48 +50,43 @@ bindsym $mod+g layout toggle split
 bindsym $mod+s floating toggle
 bindsym $mod+space focus mode_toggle
 
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
+# Browser
+set $ws1 "1: דפדפ"
+# Terminal
+set $ws2 "2: מָסוֹף"
+# Tools
+set $ws3 "3: כְּלֵי עֲבוֹדָה"
+set $ws4 "4" 
 set $ws5 "5"
 set $ws6 "6"
 set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
+# Social
+set $ws8 "8: חֶברָתִי"
+# Obsidian
+set $ws9 "9: אובסידיאן"
+# Music
+set $ws10 "10: מוּסִיקָה"
 
-workspace 1 output HDMI-1-0
-workspace 2 output HDMI-1-0
-workspace 3 output HDMI-1-0
-workspace 4 output HDMI-1-0
-workspace 5 output HDMI-1-0
-workspace 6 output HDMI2
-workspace 7 output HDMI2
-workspace 8 output HDMI2
-workspace 9 output HDMI2
-workspace 10 output HDMI2
-
-bindsym $mod+1 workspace number $ws1
-bindsym $mod+2 workspace number $ws2
-bindsym $mod+3 workspace number $ws3
-bindsym $mod+4 workspace number $ws4
-bindsym $mod+5 workspace number $ws5
-bindsym $mod+6 workspace number $ws6
-bindsym $mod+7 workspace number $ws7
-bindsym $mod+8 workspace number $ws8
-bindsym $mod+9 workspace number $ws9
-bindsym $mod+0 workspace number $ws10
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
@@ -116,11 +121,17 @@ bar {
         position top
         colors {
                 background #282828
+                focused_workspace  #d4b483 #d4b483 #000000
+                active_workspace   #d4b483 #d4b483 #000000
+                inactive_workspace #3c3836 #3c3836 #a89984
+                urgent_workspace   #cc241d #cc241d #ffffff
+                binding_mode       #b16286 #b16286 #ffffff
         }
 }
 
 default_border pixel 1
 default_floating_border pixel 1
+client.focused #d4b483 #d4b483 #d4b483 #d4b483
 
 gaps inner 0px
 gaps outer 10px
