@@ -1,0 +1,28 @@
+# ~/.config/starship.toml
+
+format = """\
+$directory$git_branch$git_status
+[$username$hostname](bold green) [x>](bold green) """
+
+[username]
+show_always = true
+style_user = "bold yellow"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bold red"
+format = "[@$hostname]($style)"
+
+[directory]
+format = "[$path]($style) "
+style = "blue"
+
+# Símbolo de Git (opcional)
+[git_branch]
+symbol = "󰊢 "
+format = "[$symbol$branch]($style) "
+
+[git_status]
+format = "[$all_status$ahead_behind]($style) "
+
